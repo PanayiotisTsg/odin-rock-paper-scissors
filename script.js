@@ -22,7 +22,7 @@ function getComputerChoice() {
 // Return the winner based on the selections of
 // the player and the computer
 function playRound(playerSelection, computerSelection) {
-
+    let roundWinner;
     // Convert first letter of playerSelection to uppercase and the rest to lowercase 
     let firstPart = playerSelection[0].toUpperCase();
     let secondPart = playerSelection.slice(1).toLowerCase();
@@ -30,56 +30,61 @@ function playRound(playerSelection, computerSelection) {
 
     // Get the winner based on both choices
     if (playerSelection === computerSelection) {
-        return 'The round is a draw!';
+        roundWinner = 'draw';
     } else if (playerSelection === 'Rock') {
-        return computerSelection === 'Paper'
-            ? 'You Lose! Paper beats Rock'
-            : 'You Win! Rock beats Scissors';
+        roundWinner = computerSelection === 'Paper'
+            ? 'computer'
+            : 'player';
     } else if (playerSelection === 'Paper') {
-        return computerSelection === 'Rock'
-            ? 'You Win! Paper beats Rock'
-            : 'You Lose! Scissors beats Paper';
+        roundWinner = computerSelection === 'Rock'
+            ? 'player'
+            : 'computer';
     } else {
-        return computerSelection === 'Rock'
-            ? 'You Lose! Rock beats Scissors'
-            : 'You Win! Scissors beats Paper';
+        roundWinner = computerSelection === 'Rock'
+            ? 'computer'
+            : 'player';
     }
+
+    return roundWinner;
 }
 
-// Play a 5 round game - Keep the score - Report the winner
-function game() {
-    // Initialize player/computer points and declare selections
-    let playerPoints = 0;
-    let computerPoints = 0;
-    let roundWinner = '';
-    let playerSelection;
-    let computerSelection;
+function getScore(roundWinner) {
+    if (roundWinner === 'player') playerPoints++;
+    else if (roundWinner === 'computer') computerPoints++;
+};
 
-    for (let i = 1; i <= 5; i++) {
-        // Set the player and computer selection for the round
-        playerSelection = prompt('Enter your choice: ');
-        computerSelection = getComputerChoice();
+let playerPoints = 0;
+let computerPoints = 0;
+let roundWinner;
 
-        // Play a round and store the result (Round winner)
-        roundWinner = playRound(playerSelection, computerSelection);
+const buttons = document.querySelectorAll('button');
+const result = document.querySelector('.result');
+const playerScore = document.querySelector('.player');
+const computerScore = document.querySelector('.computer');
+const winner = document.querySelector('.winner');
 
-        // Check the 5th character of the result to identify the winner
-        // Add a point to the player/computer accordingly 
-        switch(roundWinner[4]) {
-            case 'W':
-                playerPoints++;
-                break;
-            case 'L':
-                computerPoints++;
-                break;
+buttons.forEach(btn => {
+    btn.addEventListener('click', e => {
+        const playerSeletion = e.target.id;
+        const computerSelection = getComputerChoice();
+
+        console.log(playerSeletion);
+        console.log(computerSelection);
+        
+        roundWinner = playRound(playerSeletion, computerSelection);
+        getScore(roundWinner);
+
+        if (playerPoints === 5) {
+            winner.textContent = 'You Won!';
+            playerPoints = 0;
+            computerPoints = 0;
+        } else if (computerPoints === 5) {
+            winner.textContent = 'Computer Won!';
+            playerPoints = 0;
+            computerPoints = 0;
         }
-        console.log(roundWinner);
-    }
 
-    // Check who got the most points and return the winner
-    return playerPoints > computerPoints ? 'You won the game!'
-        : playerPoints < computerPoints ? 'Computer won the game!'
-        : 'The game is a draw!'
-}
-
-console.log(game());
+        playerScore.textContent = playerPoints;
+        computerScore.textContent = computerPoints;
+    })
+});
