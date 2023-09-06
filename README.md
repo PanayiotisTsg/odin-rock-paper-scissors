@@ -3,7 +3,7 @@
 <h1 align='center'>Rock Paper Scissors</h1>
 
 <h3 align='center'>
-    <a href='https://panayiotistsg.github.io/qr-code-component-frontendmentor/'>Play Live</a>
+    <a href='https://panayiotistsg.github.io/odin-rock-paper-scissors/'>Play Live</a>
 </h3>
 
 ## About
