@@ -8,13 +8,13 @@ function getComputerChoice() {
     // Number 0 = Rock, 1 = Paper, 2 = Scissors
     switch(randomNum) {
         case 0:
-            return 'Rock';
+            return 'rock';
             break;
         case 1:
-            return 'Paper';
+            return 'paper';
             break;
         case 2:
-            return 'Scissors';
+            return 'scissors';
             break;
     }
 }
@@ -23,24 +23,20 @@ function getComputerChoice() {
 // the player and the computer
 function playRound(playerSelection, computerSelection) {
     let roundWinner;
-    // Convert first letter of playerSelection to uppercase and the rest to lowercase 
-    let firstPart = playerSelection[0].toUpperCase();
-    let secondPart = playerSelection.slice(1).toLowerCase();
-    playerSelection = firstPart + secondPart;
 
     // Get the winner based on both choices
     if (playerSelection === computerSelection) {
         roundWinner = 'draw';
-    } else if (playerSelection === 'Rock') {
-        roundWinner = computerSelection === 'Paper'
+    } else if (playerSelection === 'rock') {
+        roundWinner = computerSelection === 'paper'
             ? 'computer'
             : 'player';
-    } else if (playerSelection === 'Paper') {
-        roundWinner = computerSelection === 'Rock'
+    } else if (playerSelection === 'paper') {
+        roundWinner = computerSelection === 'rock'
             ? 'player'
             : 'computer';
     } else {
-        roundWinner = computerSelection === 'Rock'
+        roundWinner = computerSelection === 'rock'
             ? 'computer'
             : 'player';
     }
@@ -53,36 +49,56 @@ function getScore(roundWinner) {
     else if (roundWinner === 'computer') computerPoints++;
 };
 
+function getSelectionEmoji(selection) {
+    if (selection === 'rock') return String.fromCodePoint(9994);
+    else if (selection === 'paper') return String.fromCodePoint(9995);
+    else if (selection === 'scissors') return String.fromCodePoint(9996);
+}
+
+// Check if the player/computer won the game - First to 5 wins
+function gameWinner() {
+    if (playerPoints === 5) {
+        winner.textContent = 'You Won!';
+        winner.style.cssText = 'border: 2px solid green;'
+        playerPoints = 0;
+        computerPoints = 0;
+    } else if (computerPoints === 5) {
+        winner.textContent = 'You Lost!';
+        winner.style.cssText = 'border: 2px solid red;'
+        playerPoints = 0;
+        computerPoints = 0;
+    } else {
+        winner.textContent = '';
+        winner.style.cssText = 'border: none;'
+    }
+}
+
 let playerPoints = 0;
 let computerPoints = 0;
 let roundWinner;
 
 const buttons = document.querySelectorAll('button');
-const result = document.querySelector('.result');
 const playerScore = document.querySelector('.player');
 const computerScore = document.querySelector('.computer');
 const winner = document.querySelector('.winner');
+const playerSelectionImg = document.querySelector('.player-selection');
+const computerSelectionImg = document.querySelector('.computer-selection');
 
 buttons.forEach(btn => {
     btn.addEventListener('click', e => {
-        const playerSeletion = e.target.id;
+        const playerSelection = e.target.id;
         const computerSelection = getComputerChoice();
 
-        console.log(playerSeletion);
+        console.log(playerSelection);
         console.log(computerSelection);
+
+        playerSelectionImg.textContent = getSelectionEmoji(playerSelection);
+        computerSelectionImg.textContent = getSelectionEmoji(computerSelection);
         
-        roundWinner = playRound(playerSeletion, computerSelection);
+        roundWinner = playRound(playerSelection, computerSelection);
         getScore(roundWinner);
 
-        if (playerPoints === 5) {
-            winner.textContent = 'You Won!';
-            playerPoints = 0;
-            computerPoints = 0;
-        } else if (computerPoints === 5) {
-            winner.textContent = 'Computer Won!';
-            playerPoints = 0;
-            computerPoints = 0;
-        }
+        gameWinner();
 
         playerScore.textContent = playerPoints;
         computerScore.textContent = computerPoints;
